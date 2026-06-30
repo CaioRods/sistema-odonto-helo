@@ -680,15 +680,13 @@
 
                     <!-- Appointment Status -->
                     <div class="form-group">
-                        <label for="appt-status">Status do Agendamento</label>
-                        <div class="select-wrapper border-input">
+                        <label>Status do Agendamento</label>
+                        <div class="input-wrapper border-input" style="cursor: pointer;" onclick="openApptStatusModal()">
                             <i data-lucide="eye"></i>
-                            <select id="appt-status">
-                                <option value="esperando">Esperando</option>
-                                <option value="chegou">Chegou</option>
-                                <option value="não veio">Não Veio</option>
-                                <option value="canceled">Cancelado</option>
-                            </select>
+                            <button type="button" id="appt-status-btn" style="text-align: left; background: transparent; border: none; padding: 0.65rem 1rem; width: 100%; color: var(--text-primary); font-size: 0.88rem; font-family: inherit; outline: none; cursor: pointer;">
+                                Esperando
+                            </button>
+                            <input type="hidden" id="appt-status" value="esperando">
                         </div>
                     </div>
                 </div>
@@ -762,8 +760,8 @@
                         <i data-lucide="check-square"></i>
                     </div>
                     <div class="modal-header-text">
-                        <h3>Atualizar Status</h3>
-                        <p class="modal-subtitle">Selecione o status de presença do cliente.</p>
+                        <h3 id="status-modal-title">Atualizar Status</h3>
+                        <p class="modal-subtitle" id="status-modal-subtitle">Selecione o status de presença do cliente.</p>
                     </div>
                 </div>
                 <button class="modal-close-btn" onclick="closeStatusModal()" type="button">
@@ -783,6 +781,10 @@
                 <button type="button" class="btn btn-status-select btn-status-noshow" id="btn-status-noshow" onclick="selectStatus('não veio')">
                     <i data-lucide="x-circle"></i>
                     <span>Não Veio</span>
+                </button>
+                <button type="button" class="btn btn-status-select btn-status-canceled" id="btn-status-canceled" onclick="selectStatus('canceled')">
+                    <i data-lucide="ban"></i>
+                    <span>Cancelado</span>
                 </button>
             </div>
             <div class="modal-footer">

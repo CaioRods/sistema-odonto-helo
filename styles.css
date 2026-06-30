@@ -2475,88 +2475,106 @@ html[data-theme="helo"] .spinner-ring {
     height: 18px;
 }
 
-/* Status selection buttons style */
+/* Status selection buttons style - premium card look */
 .btn-status-select {
     display: flex;
     align-items: center;
-    justify-content: center;
-    gap: 0.75rem;
+    gap: 1rem;
     width: 100%;
-    padding: 1rem;
-    font-size: 1rem;
+    padding: 0.85rem 1.25rem;
+    font-size: 0.95rem;
     font-weight: 700;
     font-family: inherit;
-    border: 2px solid transparent;
-    border-radius: var(--border-radius-lg);
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius-md);
+    background-color: var(--input-bg);
+    color: var(--text-primary);
     cursor: pointer;
-    transition: all var(--transition-normal);
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02);
+    transition: all var(--transition-fast);
+}
+
+.btn-status-select:hover {
+    transform: translateY(-2px);
 }
 
 .btn-status-select i {
-    width: 20px;
-    height: 20px;
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
 }
 
-.btn-status-waiting {
-    background-color: #fef3c7;
-    color: #d97706;
-    border-color: #f59e0b20;
+/* Waiting / Esperando */
+.btn-status-select.btn-status-waiting {
+    border-left: 4px solid #f59e0b;
+}
+.btn-status-select.btn-status-waiting:hover {
+    background-color: rgba(245, 158, 11, 0.08);
+    border-color: #f59e0b;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+.btn-status-select.btn-status-waiting i {
+    color: #f59e0b;
 }
 
-.btn-status-waiting:hover {
-    background-color: #fde68a;
-    transform: translateY(-2px);
+/* Arrived / Chegou */
+.btn-status-select.btn-status-arrived {
+    border-left: 4px solid #10b981;
+}
+.btn-status-select.btn-status-arrived:hover {
+    background-color: rgba(16, 185, 129, 0.08);
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
+}
+.btn-status-select.btn-status-arrived i {
+    color: #10b981;
 }
 
-.btn-status-arrived {
-    background-color: #dcfce7;
-    color: #15803d;
-    border-color: #10b98120;
+/* No Show / Não Veio */
+.btn-status-select.btn-status-noshow {
+    border-left: 4px solid #ef4444;
+}
+.btn-status-select.btn-status-noshow:hover {
+    background-color: rgba(239, 68, 68, 0.08);
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
+}
+.btn-status-select.btn-status-noshow i {
+    color: #ef4444;
 }
 
-.btn-status-arrived:hover {
-    background-color: #bbf7d0;
-    transform: translateY(-2px);
+/* Canceled / Cancelado */
+.btn-status-select.btn-status-canceled {
+    border-left: 4px solid #7c3aed;
+}
+.btn-status-select.btn-status-canceled:hover {
+    background-color: rgba(124, 58, 237, 0.08);
+    border-color: #7c3aed;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
+}
+.btn-status-select.btn-status-canceled i {
+    color: #7c3aed;
 }
 
-.btn-status-noshow {
-    background-color: #fee2e2;
-    color: #b91c1c;
-    border-color: #ef444420;
+/* Selected state indicators */
+.btn-status-select.selected.btn-status-waiting {
+    background-color: rgba(245, 158, 11, 0.12);
+    border-color: #f59e0b;
+    box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
 }
-
-.btn-status-noshow:hover {
-    background-color: #fecaca;
-    transform: translateY(-2px);
+.btn-status-select.selected.btn-status-arrived {
+    background-color: rgba(16, 185, 129, 0.12);
+    border-color: #10b981;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15);
 }
-
-/* Dark theme adaptations for status buttons */
-html[data-theme="dark"] .btn-status-waiting {
-    background-color: #78350f30;
-    color: #fbbf24;
+.btn-status-select.selected.btn-status-noshow {
+    background-color: rgba(239, 68, 68, 0.12);
+    border-color: #ef4444;
+    box-shadow: 0 4px 12px rgba(239, 68, 68, 0.15);
 }
-
-html[data-theme="dark"] .btn-status-waiting:hover {
-    background-color: #78350f50;
-}
-
-html[data-theme="dark"] .btn-status-arrived {
-    background-color: #064e3b30;
-    color: #34d399;
-}
-
-html[data-theme="dark"] .btn-status-arrived:hover {
-    background-color: #064e3b50;
-}
-
-html[data-theme="dark"] .btn-status-noshow {
-    background-color: #7f1d1d30;
-    color: #f87171;
-}
-
-html[data-theme="dark"] .btn-status-noshow:hover {
-    background-color: #7f1d1d50;
+.btn-status-select.selected.btn-status-canceled {
+    background-color: rgba(124, 58, 237, 0.12);
+    border-color: #7c3aed;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.15);
 }
 
 /* Modal Client Search List */

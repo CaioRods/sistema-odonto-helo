@@ -688,14 +688,26 @@ function buildAppointmentCard(appt) {
 // ─── Status Selection Modal Logic ──────────────────────────────────────────
 
 function openStatusModal(apptId) {
-  const appt = appointments.find(a => a.id === apptId);
-  if (!appt) return;
-
-  document.getElementById('status-modal-appt-id').value = apptId;
-
-  document.querySelectorAll('.btn-status-select').forEach(btn => btn.style.border = '2px solid transparent');
+  let currentStatus = 'esperando';
   
-  const currentStatus = appt.status || 'esperando';
+  if (apptId === 'form') {
+    document.getElementById('status-modal-title').textContent = 'Selecionar Status';
+    document.getElementById('status-modal-subtitle').textContent = 'Selecione o status para esta nova consulta.';
+    document.getElementById('status-modal-appt-id').value = 'form';
+    currentStatus = document.getElementById('appt-status').value || 'esperando';
+  } else {
+    const appt = appointments.find(a => a.id === apptId);
+    if (!appt) return;
+    document.getElementById('status-modal-title').textContent = 'Atualizar Status';
+    document.getElementById('status-modal-subtitle').textContent = 'Selecione o status de presença do cliente.';
+    document.getElementById('status-modal-appt-id').value = apptId;
+    currentStatus = appt.status || 'esperando';
+  }
+
+  document.querySelectorAll('.btn-status-select').forEach(btn => {
+    btn.classList.remove('selected');
+  });
+  
   let activeBtn = null;
   if (currentStatus === 'esperando') {
     activeBtn = document.getElementById('btn-status-waiting');
@@ -703,13 +715,16 @@ function openStatusModal(apptId) {
     activeBtn = document.getElementById('btn-status-arrived');
   } else if (currentStatus === 'não veio') {
     activeBtn = document.getElementById('btn-status-noshow');
+  } else if (currentStatus === 'canceled') {
+    activeBtn = document.getElementById('btn-status-canceled');
   }
 
   if (activeBtn) {
-    activeBtn.style.border = '2px solid var(--accent-primary)';
+    activeBtn.classList.add('selected');
   }
 
   document.getElementById('status-modal').classList.add('active');
+  lucide.createIcons();
 }
 
 function closeStatusModal() {
@@ -718,17 +733,40 @@ function closeStatusModal() {
 
 function selectStatus(statusVal) {
   const apptId = document.getElementById('status-modal-appt-id').value;
-  const appt = appointments.find(a => a.id === apptId);
-  if (!appt) return;
-
-  appt.status = statusVal;
-  saveAppointments();
-  closeStatusModal();
-  renderAll();
   
-  const client = clientsRegistry.find(c => c.id === appt.clientId);
-  const clientName = client ? client.name : 'Cliente';
-  showToast('🔄 Status Atualizado', `${clientName} marcado como ${statusVal}.`);
+  if (apptId === 'form') {
+    const hiddenInput = document.getElementById('appt-status');
+    const displayBtn = document.getElementById('appt-status-btn');
+    if (hiddenInput && displayBtn) {
+      hiddenInput.value = statusVal;
+      
+      let statusLabel = 'Esperando';
+      if (statusVal === 'chegou') statusLabel = 'Chegou';
+      else if (statusVal === 'não veio') statusLabel = 'Não Veio';
+      else if (statusVal === 'canceled') statusLabel = 'Cancelado';
+      
+      displayBtn.textContent = statusLabel;
+    }
+    closeStatusModal();
+  } else {
+    const appt = appointments.find(a => a.id === apptId);
+    if (!appt) return;
+
+    appt.status = statusVal;
+    saveAppointments();
+    closeStatusModal();
+    renderAll();
+    
+    const client = clientsRegistry.find(c => c.id === appt.clientId);
+    const clientName = client ? client.name : 'Cliente';
+    
+    let statusLabel = 'esperando';
+    if (statusVal === 'chegou') statusLabel = 'compareceu';
+    else if (statusVal === 'não veio') statusLabel = 'faltou';
+    else if (statusVal === 'canceled') statusLabel = 'cancelado';
+    
+    showToast('🔄 Status Atualizado', `${clientName} marcado como ${statusLabel}.`);
+  }
 }
 
 // ─── Client Registry Table & Cards ─────────────────────────────────────────
@@ -1275,6 +1313,7 @@ function openAppointmentModal(prefilledTime = '09:00', prefilledDate = null) {
   document.getElementById('appt-date').value = dateValue;
   document.getElementById('appt-time').value = prefilledTime;
   document.getElementById('appt-status').value = 'esperando';
+  document.getElementById('appt-status-btn').textContent = 'Esperando';
 
   modal.classList.add('active');
   lucide.createIcons();
@@ -1339,7 +1378,15 @@ function openAppointmentEditModal(apptId) {
 
   document.getElementById('appt-date').value = appt.date;
   document.getElementById('appt-time').value = appt.time;
-  document.getElementById('appt-status').value = appt.status || 'esperando';
+
+  const statusVal = appt.status || 'esperando';
+  document.getElementById('appt-status').value = statusVal;
+  
+  let statusLabel = 'Esperando';
+  if (statusVal === 'chegou') statusLabel = 'Chegou';
+  else if (statusVal === 'não veio') statusLabel = 'Não Veio';
+  else if (statusVal === 'canceled') statusLabel = 'Cancelado';
+  document.getElementById('appt-status-btn').textContent = statusLabel;
 
   document.getElementById('appointment-modal').classList.add('active');
   lucide.createIcons();
@@ -2693,6 +2740,10 @@ function selectProcedure(procedureValue) {
   }
   
   closeProcedureModal();
+}
+
+function openApptStatusModal() {
+  openStatusModal('form');
 }
 
 function escapeHtml(str) {

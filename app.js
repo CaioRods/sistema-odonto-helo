@@ -665,17 +665,12 @@ function buildAppointmentCard(appt) {
     statusButton = `<button type="button" class="btn-arrive" onclick="event.stopPropagation(); openStatusModal('${appt.id}')" title="Atualizar Status"><i data-lucide="help-circle"></i> Status</button>`;
   }
 
-  const genderIcon = client.gender === 'female'
-    ? `<i data-lucide="venus" class="client-gender-icon gender-female" title="Mulher"></i>`
-    : `<i data-lucide="mars" class="client-gender-icon gender-male" title="Homem"></i>`;
-
   return `
     <div class="client-card appt-card" data-id="${appt.id}" data-type="appointment">
       ${avatarHtml}
       <div class="card-content">
         <div class="cell-client-name" style="display:flex; align-items:center; gap:0.35rem;">
           ${escapeHtml(client.name)}
-          ${genderIcon}
         </div>
         <div class="cell-phone">${escapeHtml(client.phone)}</div>
         <div class="cell-cpf" style="font-size:0.8rem;color:var(--text-muted)">${client.cpf ? escapeHtml(client.cpf) : '—'}</div>
@@ -769,17 +764,12 @@ function buildClientCard(client) {
   const totalAppts = clientAppts.length;
   const activeAppts = clientAppts.filter(a => a.status === 'esperando').length;
 
-  const genderIcon = client.gender === 'female'
-    ? `<i data-lucide="venus" class="client-gender-icon gender-female" title="Mulher"></i>`
-    : `<i data-lucide="mars" class="client-gender-icon gender-male" title="Homem"></i>`;
-
   return `
     <div class="client-card client-profile-card" data-id="${client.id}" data-type="client" style="border-left: 3px solid var(--accent-secondary);">
       ${avatarHtml}
       <div class="card-content">
         <div class="cell-client-name" style="display:flex; align-items:center; gap:0.35rem;">
           ${escapeHtml(client.name)}
-          ${genderIcon}
         </div>
         <div class="cell-phone">${escapeHtml(client.phone)}</div>
         <div class="cell-cpf" style="font-size:0.8rem;color:var(--text-muted)">CPF: ${client.cpf ? escapeHtml(client.cpf) : '—'}</div>
@@ -914,7 +904,6 @@ function selectClientForAppointment(clientId) {
   document.getElementById('appt-client-name').value = client.name;
   document.getElementById('appt-client-phone').value = client.phone;
   document.getElementById('appt-client-cpf').value = client.cpf || '';
-  setApptGender(client.gender || 'male');
 
   closeClientSearchModal();
 }
@@ -987,16 +976,11 @@ function buildHistoryCard(appt) {
     statusText = `<span style="font-size:0.8rem;color:#7c3aed;font-weight:700;">💜 Cancelado</span>`;
   }
 
-  const genderIcon = client.gender === 'female'
-    ? `<i data-lucide="venus" class="client-gender-icon gender-female" title="Mulher"></i>`
-    : `<i data-lucide="mars" class="client-gender-icon gender-male" title="Homem"></i>`;
-
   return `
     <div class="client-card history-card" data-id="${appt.id}" data-type="appointment" style="opacity: 0.85; border-left: 3px solid var(--text-muted);">
       <div class="card-content">
         <div class="cell-client-name" style="display:flex; align-items:center; gap:0.35rem;">
           ${escapeHtml(client.name)}
-          ${genderIcon}
         </div>
         <div class="cell-phone">${escapeHtml(client.phone)}</div>
         <div class="procedure-badge" style="margin-top:0.25rem;">${escapeHtml(appt.type)}</div>
@@ -1175,17 +1159,7 @@ function renderAll() {
 
 // ─── CRUD Operations ────────────────────────────────────────────────────────
 
-function setGender(genderVal) {
-  document.getElementById('profile-client-gender').value = genderVal;
-  document.getElementById('gender-male').classList.toggle('active', genderVal === 'male');
-  document.getElementById('gender-female').classList.toggle('active', genderVal === 'female');
-}
 
-function setApptGender(genderVal) {
-  document.getElementById('appt-client-gender').value = genderVal;
-  document.getElementById('appt-gender-male').classList.toggle('active', genderVal === 'male');
-  document.getElementById('appt-gender-female').classList.toggle('active', genderVal === 'female');
-}
 
 function openClientModal() {
   const modal = document.getElementById('client-modal');
@@ -1193,7 +1167,6 @@ function openClientModal() {
   document.getElementById('client-modal-badge').innerHTML = '<i data-lucide="user-plus"></i>';
   document.getElementById('client-form').reset();
   document.getElementById('profile-client-id').value = '';
-  setGender('male');
 
   modal.classList.add('active');
   lucide.createIcons();
@@ -1215,7 +1188,6 @@ function openClientEditModal(clientId) {
   document.getElementById('profile-client-name').value = client.name;
   document.getElementById('profile-client-phone').value = client.phone;
   document.getElementById('profile-client-cpf').value = client.cpf || '';
-  setGender(client.gender || 'male');
 
   document.getElementById('client-modal').classList.add('active');
   lucide.createIcons();
@@ -1230,8 +1202,6 @@ function saveClientProfile(event) {
   const name = document.getElementById('profile-client-name').value.trim();
   const phone = document.getElementById('profile-client-phone').value.trim();
   const cpf = document.getElementById('profile-client-cpf').value.trim();
-  const gender = document.getElementById('profile-client-gender').value;
-
   if (id) {
     const idx = clientsRegistry.findIndex(c => c.id === id);
     if (idx !== -1) {
@@ -1239,8 +1209,7 @@ function saveClientProfile(event) {
         ...clientsRegistry[idx],
         name,
         phone,
-        cpf,
-        gender
+        cpf
       };
     }
   } else {
@@ -1249,7 +1218,6 @@ function saveClientProfile(event) {
       name,
       phone,
       cpf,
-      gender,
       createdAt: new Date().toISOString()
     });
   }
@@ -1293,7 +1261,8 @@ function openAppointmentModal(prefilledTime = '09:00', prefilledDate = null) {
   document.getElementById('appt-client-name').value = '';
   document.getElementById('appt-client-phone').value = '';
   document.getElementById('appt-client-cpf').value = '';
-  setApptGender('male');
+  document.getElementById('appt-type').value = '';
+  document.getElementById('appt-type-btn').textContent = 'Escolha o tipo de consulta';
   document.getElementById('appt-client-match-info').textContent = '';
   document.getElementById('appt-client-suggestions').style.display = 'none';
 
@@ -1332,7 +1301,6 @@ function openAppointmentEditModal(apptId) {
   document.getElementById('appt-client-name').value = client.name;
   document.getElementById('appt-client-phone').value = client.phone;
   document.getElementById('appt-client-cpf').value = client.cpf || '';
-  setApptGender(client.gender || 'male');
   document.getElementById('appt-client-match-info').textContent = 'Cliente existente vinculado.';
   document.getElementById('appt-client-suggestions').style.display = 'none';
 
@@ -1341,16 +1309,29 @@ function openAppointmentEditModal(apptId) {
   document.getElementById('appt-client-phone').readOnly = false;
   document.getElementById('appt-client-cpf').readOnly = false;
 
-  const select = document.getElementById('appt-type');
-  const optionExists = Array.from(select.options).some(opt => opt.value === appt.type);
-  
-  if (optionExists) {
-    select.value = appt.type;
+  const PREDEFINED_PROCEDURES = [
+    "Consulta Geral",
+    "Limpeza & Profilaxia",
+    "Canal / Endodontia",
+    "Aparelho / Ortodontia",
+    "Restauração",
+    "Extração / Cirurgia",
+    "Implante / Prótese",
+    "Clareamento Dental"
+  ];
+  const hiddenInput = document.getElementById('appt-type');
+  const displayBtn = document.getElementById('appt-type-btn');
+  const isPredefined = PREDEFINED_PROCEDURES.includes(appt.type);
+
+  if (isPredefined) {
+    hiddenInput.value = appt.type;
+    displayBtn.textContent = appt.type;
     document.getElementById('container-outro-procedimento-appt').style.display = 'none';
     document.getElementById('outro-procedimento-appt').required = false;
     document.getElementById('outro-procedimento-appt').value = '';
   } else {
-    select.value = 'Outros';
+    hiddenInput.value = 'Outros';
+    displayBtn.textContent = 'Outros';
     document.getElementById('container-outro-procedimento-appt').style.display = 'block';
     document.getElementById('outro-procedimento-appt').required = true;
     document.getElementById('outro-procedimento-appt').value = appt.type;
@@ -1409,7 +1390,6 @@ function selectApptClient(clientId) {
   document.getElementById('appt-client-name').value = client.name;
   document.getElementById('appt-client-phone').value = client.phone;
   document.getElementById('appt-client-cpf').value = client.cpf || '';
-  setApptGender(client.gender || 'male');
   document.getElementById('appt-client-suggestions').style.display = 'none';
   document.getElementById('appt-client-match-info').textContent = 'Cliente existente selecionado.';
   document.getElementById('appt-client-match-info').style.color = 'var(--success-color, #22c55e)';
@@ -1431,7 +1411,6 @@ function saveAppointment(event) {
   const clientName = document.getElementById('appt-client-name').value.trim();
   const clientPhone = document.getElementById('appt-client-phone').value.trim();
   const clientCpf = document.getElementById('appt-client-cpf').value.trim();
-  const clientGender = document.getElementById('appt-client-gender').value;
 
   let type = document.getElementById('appt-type').value;
   if (type === 'Outros') {
@@ -1473,7 +1452,6 @@ function saveAppointment(event) {
     if (existingIdx !== -1) {
       clientsRegistry[existingIdx].name = clientName;
       clientsRegistry[existingIdx].phone = clientPhone;
-      clientsRegistry[existingIdx].gender = clientGender;
       if (clientCpf) clientsRegistry[existingIdx].cpf = clientCpf;
       saveClientsRegistry();
     }
@@ -1482,9 +1460,8 @@ function saveAppointment(event) {
     const existingByPhone = clientsRegistry.find(c => normalizePhone(c.phone) === phoneNorm);
     if (existingByPhone) {
       clientId = existingByPhone.id;
-      // Update name, gender and cpf if provided
+      // Update name and cpf if provided
       existingByPhone.name = clientName;
-      existingByPhone.gender = clientGender;
       if (clientCpf) existingByPhone.cpf = clientCpf;
       saveClientsRegistry();
     } else {
@@ -1494,7 +1471,6 @@ function saveAppointment(event) {
         name: clientName,
         phone: clientPhone,
         cpf: clientCpf,
-        gender: clientGender,
         createdAt: new Date().toISOString()
       };
       clientsRegistry.push(newClient);
@@ -2616,10 +2592,6 @@ function renderCalendarDayDetails(dateStr) {
       statusLabel = 'Cancelada';
     }
 
-    const genderIcon = client.gender === 'female'
-      ? `<i data-lucide="venus" class="client-gender-icon gender-female" title="Mulher"></i>`
-      : `<i data-lucide="mars" class="client-gender-icon gender-male" title="Homem"></i>`;
-
     return `
       <div class="client-card" style="display: flex; flex-direction: column; justify-content: space-between; border-left: 4px solid var(--accent-primary);">
         <div>
@@ -2629,7 +2601,6 @@ function renderCalendarDayDetails(dateStr) {
           </div>
           <h4 class="card-name" style="margin: 0.5rem 0 0.25rem 0; display:flex; align-items:center; gap:0.35rem;">
             ${escapeHtml(client.name)}
-            ${genderIcon}
           </h4>
           <p class="card-procedure" style="font-size: 0.82rem; color: var(--text-secondary); margin-bottom: 0.5rem;">
             <i data-lucide="stethoscope" style="width:12px;height:12px;display:inline-block;vertical-align:middle;margin-right:2px;"></i> ${escapeHtml(appt.type)}
@@ -2683,6 +2654,45 @@ function verificarProcedimentoOutrosAppt() {
 
 function openClientModalToday(prefilledTime = '09:00') {
   openAppointmentModal(prefilledTime, getTodayDateStr());
+}
+
+function openProcedureModal() {
+  const modal = document.getElementById('procedure-modal');
+  if (!modal) return;
+  
+  const currentValue = document.getElementById('appt-type').value;
+  const buttons = modal.querySelectorAll('.procedure-item-btn');
+  buttons.forEach(btn => {
+    const onClickAttr = btn.getAttribute('onclick') || '';
+    if (onClickAttr.includes(`'${currentValue}'`)) {
+      btn.classList.add('selected');
+    } else {
+      btn.classList.remove('selected');
+    }
+  });
+  
+  modal.classList.add('active');
+  lucide.createIcons();
+}
+
+function closeProcedureModal() {
+  const modal = document.getElementById('procedure-modal');
+  if (modal) {
+    modal.classList.remove('active');
+  }
+}
+
+function selectProcedure(procedureValue) {
+  const hiddenInput = document.getElementById('appt-type');
+  const displayBtn = document.getElementById('appt-type-btn');
+  
+  if (hiddenInput && displayBtn) {
+    hiddenInput.value = procedureValue;
+    displayBtn.textContent = procedureValue === '' ? 'Escolha o tipo de consulta' : procedureValue;
+    verificarProcedimentoOutrosAppt();
+  }
+  
+  closeProcedureModal();
 }
 
 function escapeHtml(str) {

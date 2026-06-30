@@ -566,21 +566,7 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label>Sexo <span class="required">*</span></label>
-                        <div class="gender-selector">
-                            <input type="hidden" id="profile-client-gender" value="male">
-                            <button type="button" class="gender-btn active" id="gender-male" onclick="setGender('male')" title="Masculino">
-                                <i data-lucide="mars"></i>
-                                <span>Homem</span>
-                            </button>
-                            <button type="button" class="gender-btn" id="gender-female" onclick="setGender('female')" title="Feminino">
-                                <i data-lucide="venus"></i>
-                                <span>Mulher</span>
-                            </button>
-                        </div>
-                    </div>
-                </div>
+
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" onclick="closeClientModal()">
                         <i data-lucide="x"></i>
@@ -651,39 +637,15 @@
                                 <input type="text" id="appt-client-cpf" placeholder="000.000.000-00">
                             </div>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <label>Sexo <span class="required">*</span></label>
-                        <div class="gender-selector">
-                            <input type="hidden" id="appt-client-gender" value="male">
-                            <button type="button" class="gender-btn active" id="appt-gender-male" onclick="setApptGender('male')" title="Masculino">
-                                <i data-lucide="mars"></i>
-                                <span>Homem</span>
-                            </button>
-                            <button type="button" class="gender-btn" id="appt-gender-female" onclick="setApptGender('female')" title="Feminino">
-                                <i data-lucide="venus"></i>
-                                <span>Mulher</span>
-                            </button>
-                        </div>
-                    </div>
-
                     <!-- Procedure Type -->
                     <div class="form-group">
-                        <label for="appt-type">Procedimento / Consulta <span class="required">*</span></label>
-                        <div class="select-wrapper border-input">
+                        <label>Procedimento / Consulta <span class="required">*</span></label>
+                        <div class="input-wrapper border-input" style="cursor: pointer;" onclick="openProcedureModal()">
                             <i data-lucide="stethoscope"></i>
-                            <select id="appt-type" required onchange="verificarProcedimentoOutrosAppt()">
-                                <option value="" disabled selected>Escolha o tipo de consulta</option>
-                                <option value="Consulta Geral">Consulta Geral / Avaliação</option>
-                                <option value="Limpeza & Profilaxia">Limpeza & Profilaxia</option>
-                                <option value="Canal / Endodontia">Canal / Endodontia</option>
-                                <option value="Aparelho / Ortodontia">Aparelho / Ortodontia</option>
-                                <option value="Restauração">Restauração / Obturação</option>
-                                <option value="Extração / Cirurgia">Extração / Cirurgia</option>
-                                <option value="Implante / Prótese">Implante / Prótese</option>
-                                <option value="Clareamento Dental">Clareamento Dental</option>
-                                <option value="Outros">Outros</option>
-                            </select>
+                            <button type="button" id="appt-type-btn" style="text-align: left; background: transparent; border: none; padding: 0.65rem 1rem; width: 100%; color: var(--text-primary); font-size: 0.88rem; font-family: inherit; outline: none; cursor: pointer;">
+                                Escolha o tipo de consulta
+                            </button>
+                            <input type="hidden" id="appt-type" required value="">
                         </div>
                     </div>
 
@@ -824,6 +786,108 @@
                 <button type="button" class="btn btn-secondary" onclick="closeStatusModal()">
                     <i data-lucide="x"></i>
                     <span>Cancelar</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Procedure Selection Modal -->
+    <div class="modal-overlay" id="procedure-modal">
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <div class="modal-header-left">
+                    <div class="modal-icon-badge">
+                        <i data-lucide="stethoscope"></i>
+                    </div>
+                    <div class="modal-header-text">
+                        <h3>Escolher Procedimento</h3>
+                        <p class="modal-subtitle">Selecione o procedimento para esta consulta.</p>
+                    </div>
+                </div>
+                <button class="modal-close-btn" onclick="closeProcedureModal()" type="button">
+                    <i data-lucide="x"></i>
+                </button>
+            </div>
+            <div class="modal-body" style="padding: 1.5rem 1rem;">
+                <div class="procedures-grid">
+                    <!-- Procedure Buttons -->
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Consulta Geral')">
+                        <div class="proc-icon"><i data-lucide="stethoscope"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Consulta Geral</span>
+                            <span class="proc-desc">Avaliação inicial ou rotina</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Limpeza & Profilaxia')">
+                        <div class="proc-icon"><i data-lucide="sparkles"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Limpeza & Profilaxia</span>
+                            <span class="proc-desc">Limpeza completa e flúor</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Canal / Endodontia')">
+                        <div class="proc-icon"><i data-lucide="activity"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Canal / Endodontia</span>
+                            <span class="proc-desc">Tratamento de canal do dente</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Aparelho / Ortodontia')">
+                        <div class="proc-icon"><i data-lucide="smile"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Aparelho / Ortodontia</span>
+                            <span class="proc-desc">Manutenção ou instalação</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Restauração')">
+                        <div class="proc-icon"><i data-lucide="shield"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Restauração</span>
+                            <span class="proc-desc">Obturação e restauração estética</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Extração / Cirurgia')">
+                        <div class="proc-icon"><i data-lucide="scissors"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Extração / Cirurgia</span>
+                            <span class="proc-desc">Remoção de dente ou cirurgia</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Implante / Prótese')">
+                        <div class="proc-icon"><i data-lucide="award"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Implante / Prótese</span>
+                            <span class="proc-desc">Fixação de dentes ou prótese</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Clareamento Dental')">
+                        <div class="proc-icon"><i data-lucide="tooth"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Clareamento Dental</span>
+                            <span class="proc-desc">Estética e branqueamento</span>
+                        </div>
+                    </button>
+                    
+                    <button type="button" class="procedure-item-btn" onclick="selectProcedure('Outros')">
+                        <div class="proc-icon"><i data-lucide="edit-3"></i></div>
+                        <div class="proc-details">
+                            <span class="proc-name">Outros</span>
+                            <span class="proc-desc">Outro procedimento personalizado</span>
+                        </div>
+                    </button>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" onclick="closeProcedureModal()">
+                    <i data-lucide="x"></i>
+                    <span>Fechar</span>
                 </button>
             </div>
         </div>
